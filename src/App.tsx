@@ -2,9 +2,9 @@ import React from 'react';
 import './App.css';
 // import RegisterPage from './RegisterPage/RegisterPage';
 // import Loginpage from './LoginPage/LoginPage';
-import {BrowserRouter as Router,Switch,Route} from 'react-router-dom';
-import Signup from './signup';
-import Login from './login';
+import {BrowserRouter as Router,Switch,Route,Redirect} from 'react-router-dom';
+import Register from './RegisterPage/RegisterPage';
+import Login from './LoginPage/LoginPage';
 
 function App() {
   return (
@@ -13,8 +13,9 @@ function App() {
         <Switch>
           {/* <Route path="/login" component={Loginpage}/> 
           <Route path="/Register" component={RegisterPage}/> */}
-          <Route path="/register" exact component={Signup}/>
-       
+          <Route path="/" exact component={Register}/>
+          <Route path="/login" component={Login}/>
+          <Redirect from="*" to='/'/>
         </Switch>
       </Router>
     </div>
