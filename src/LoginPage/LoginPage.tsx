@@ -1,7 +1,8 @@
 import React, { useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Redirect,Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { login } from "../actions/auth";
+import { Button,Input,Label,Form, FormField,Image,Grid,Header,Segment,Message} from "semantic-ui-react";
 
 const Login = () => {
   const form = useRef();
@@ -9,6 +10,8 @@ const Login = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [successful, setSuccessful] = useState(false);
+  const { message } = useSelector((state:any) => state.message);
 
   const dispatch = useDispatch();
 
@@ -28,51 +31,60 @@ const Login = () => {
 
   };
   return (
-    <div className="col-md-12">
-      <div className="card card-container">
-        <img
-          src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
-          alt="profile-img"
-          className="profile-img-card"
-        />
-            <h1>Login</h1>
-        <form onSubmit={handleLogin} >
-          <div className="form-group">
-            <label htmlFor="username">Username</label>
-            <input
-              type="text"
-              className="form-control"
-              name="username"
+    
+      <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
+      <Grid.Column style={{ maxWidth: 450 }}>
+        <Form  size='large' onSubmit={handleLogin} >
+        <Segment stacked>
+        <Header as='h2' color='teal' textAlign='center'>
+        <h1>Login</h1>
+        </Header>
+            
+        
+       
+            <Form.Input
+              type="email"
+              fluid icon='user'
+              iconPosition='left'
+              placeholder="Email"
+              name="email"
               value={email}
               onChange={onChangeUsername}
            
             />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
+         
+            <Form.Input
               type="password"
-              className="form-control"
+              icon='lock'
+              iconPosition='left'
+              placeholder="password"
               name="password"
               value={password}
               onChange={onChangePassword}
  
             />
-          </div>
+         
+          
+            <Button color='teal' fluid size='large'>Login</Button>
+            
+            {message && (
+                                    <div>
+                                    <div className={  successful ? "alert alert-success" : "alert alert-danger" } role="alert">
+                                        {message}
+                                    </div>
+                                    </div>
+                                )}
+       
 
-          <div className="form-group">
-            <button className="btn btn-primary btn-block" >
-           
-              <span>Login</span>
-            </button>
-            <Link to="/register">Register</Link>
-          </div>
-
-  
-        </form>
-      </div>
-    </div>
+        </Segment>
+        </Form>
+        <Message>
+        New to us? <a href='/register'>Register</a>
+      </Message>
+        </Grid.Column>
+        </Grid>
+     
+    
   );
 };
 

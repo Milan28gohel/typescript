@@ -1,21 +1,21 @@
 import React from 'react';
 import './App.css';
-// import RegisterPage from './RegisterPage/RegisterPage';
-// import Loginpage from './LoginPage/LoginPage';
-import {BrowserRouter as Router,Switch,Route,Redirect} from 'react-router-dom';
+
+import { Router, Switch, Route, Redirect } from 'react-router-dom';
 import Register from './RegisterPage/RegisterPage';
 import Login from './LoginPage/LoginPage';
+import { history } from './helpers/history';
+import HomePage from './HomePage/HomePage';
 
 function App() {
   return (
     <div className="App">
-      <Router>
+      <Router history={history}>
         <Switch>
-          {/* <Route path="/login" component={Loginpage}/> 
-          <Route path="/Register" component={RegisterPage}/> */}
-          <Route path="/" exact component={Register}/>
-          <Route path="/login" component={Login}/>
-          <Redirect from="*" to='/'/>
+          <Route exact path="/register" component={Register} />
+          <Route path="/login" component={Login} />
+        <Route path="/" component={HomePage} />
+          <Redirect from="*" to="/" />
         </Switch>
       </Router>
     </div>
