@@ -1,18 +1,22 @@
 
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch,useSelector } from "react-redux";
 import { register } from "../actions/auth";
 import { Link } from "react-router-dom";
+import { Button,Input,Form, FormField,Grid,Header,Segment,Message} from "semantic-ui-react";
+
+
+
+
 const Register = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [confirmpassword, setConfirmpassword] = useState("");
     const [successful, setSuccessful] = useState(false);
+    const { message } = useSelector((state:any) => state.message);
     const dispatch = useDispatch();
-    const onChangeConfirmpassword = (e: any) => {
-        const confirmpassword = e.target.value;
-        setConfirmpassword(confirmpassword);
-    };
+
+    
+
     const onChangeEmail = (e: any) => {
         const email = e.target.value;
         setEmail(email);
@@ -24,45 +28,65 @@ const Register = () => {
     const handleRegister = (e: any) => {
         e.preventDefault();
         setSuccessful(false);
-        dispatch(register(email, password
-            ))
+        dispatch(register(email, password))
     };
     return (
-        <div className="col-md-12">
-            <div className="card card-container">
-                <form onSubmit={handleRegister} >
-                    {!successful && (
-                        <div>
-                            <h1>Register</h1>
-                            <div className="form-group">
-                                <label htmlFor="email">Email</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
+       
+            <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
+            <Grid.Column style={{ maxWidth: 450 }}>
+                <Form  size='large' onSubmit={handleRegister} >
+                <Segment stacked>
+                   
+                            <Header as='h2' color='teal' textAlign='center'>
+                            <h1 >Register</h1>
+                            </Header>
+                      
+                                <Form.Input
+                                    type="email"
+                                    fluid icon='user'
+                                    iconPosition='left'
                                     name="email"
+                                    placeholder="Email"
                                     value={email}
                                     onChange={onChangeEmail}
+                                   
                                 />
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="password">Password</label>
-                                <input
+                        
+                            
+                            
+                       
+                                <Form.Input
                                     type="password"
-                                    className="form-control"
+                                    icon='lock'
+                                    iconPosition='left'
+                                    placeholder="password"
                                     name="password"
                                     value={password}
                                     onChange={onChangePassword}
                                 />
-                            </div>
-                            <div className="form-group">
-                                <button className="btn btn-primary btn-block">Sign Up</button>
+                         
+                           
+                        
+                                <Button color='teal' fluid size='large'>Sign Up</Button>
+                                
+                              
+                                {message && (
+                                    <div>
+                                    <div className={  successful ? "alert alert-success" : "alert alert-danger" } role="alert">
+                                        {message}
+                                    </div>
+                                    </div>
+                                )}
+                                
+                  
+              </Segment>
+                </Form>
+                             <Message>
                                 <Link to="/login">Login</Link>
-                            </div>
-                        </div>
-                    )}
-                </form>
-            </div>
-        </div>
+                                </Message>
+                </Grid.Column>
+                </Grid>
+        
     );
 };
 export default Register;    
