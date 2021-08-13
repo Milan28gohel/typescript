@@ -12,9 +12,9 @@ function App() {
     <div className="App">
       <Router history={history}>
         <Switch>
-          <Route exact path="/register" component={Register} />
+          <Route exact path="/" component={Register} />
           <Route path="/login" component={Login} />
-        <Route path="/" component={HomePage} />
+        <Route path="/home" component={HomePage} />
           <Redirect from="*" to="/" />
         </Switch>
       </Router>
