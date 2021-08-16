@@ -1,9 +1,7 @@
-
-
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { add } from "../actions/auth";
+import {  useSelector } from "react-redux";
 import { Button, Form, Grid, Header, Segment} from "semantic-ui-react";
+
 
 const Home = () => {
     const [data, setData] = useState("");
@@ -11,7 +9,6 @@ const Home = () => {
     const [priority, setPriority] = useState("");
     const [successful, setSuccessful] = useState(false);
     const { message } = useSelector((state: any) => state.message);
-    const dispatch = useDispatch();
 
     const onChangeData = (e: any) => {
         const data = e.target.value;
@@ -27,8 +24,25 @@ const Home = () => {
     };
     const handleAdd = (e: any) => {
         e.preventDefault();
-        setSuccessful(false);
-        dispatch(add(data, due_date,priority))
+        const store ={data:data ,due_date:due_date,priority:priority}
+
+        fetch('https://rails-to-do-list-narola.herokuapp.com/v1/todos',{
+            method:'POST',
+            headers:{
+                'Content-Type':'application/json',
+                'access-token': localStorage.getItem("auth_token") || '',
+            },
+            body:JSON.stringify(store),
+        })
+        .then(response => response.json())
+        .then(data =>{
+            console.log('Success:',data);
+            console.log('token:',data.auth_token);
+        })
+        .catch((error)=>{
+             console.error('Error:',error);
+        });
+
     };
     return (
 
@@ -79,8 +93,12 @@ const Home = () => {
                     </Segment>
                 </Form>
             </Grid.Column>
+  
+        
+        
         </Grid>
 
+        
     );
 };
 export default Home;

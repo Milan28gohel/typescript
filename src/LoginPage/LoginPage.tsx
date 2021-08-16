@@ -4,8 +4,6 @@ import { login } from "../actions/auth";
 import { Button, Form, Grid, Header, Segment, Message } from "semantic-ui-react";
 
 const Login = () => {
-  // const form = useRef();
-  // const checkBtn = useRef();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,7 +25,6 @@ const Login = () => {
   const handleLogin = (e: any) => {
     e.preventDefault();
     dispatch(login(email, password))
-
   };
   return (
 
@@ -68,7 +65,7 @@ const Login = () => {
               </div>
             )}
 
-
+      
           </Segment>
         </Form>
         <Message>
