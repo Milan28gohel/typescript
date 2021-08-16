@@ -1,16 +1,13 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from 'react-router-dom';
 import { login } from "../actions/auth";
 import { Button, Form, Grid, Header, Segment, Message } from "semantic-ui-react";
 
 const Login = () => {
-  const form = useRef();
-  const checkBtn = useRef();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [successful, setSuccessful] = useState(false);
+  const [successful] = useState(false);
   const { message } = useSelector((state: any) => state.message);
 
   const dispatch = useDispatch();
@@ -28,7 +25,6 @@ const Login = () => {
   const handleLogin = (e: any) => {
     e.preventDefault();
     dispatch(login(email, password))
-
   };
   return (
 
@@ -69,7 +65,7 @@ const Login = () => {
               </div>
             )}
 
-
+      
           </Segment>
         </Form>
         <Message>

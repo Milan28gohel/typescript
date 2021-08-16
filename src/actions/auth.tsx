@@ -78,6 +78,36 @@ import {
       }
     );
   };
+
+   export const add = (data?:string, due_date?:string,priority?:string) => (dispatch:any) => {
+    return AuthService.add( data, due_date,priority).then(
+      (data) => {
+        dispatch({
+          payload: { user: data },
+        });
+        return ;
+      },
+      (error) => {
+        const message =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+  
+        dispatch({
+          type: LOGIN_FAIL,
+        });
+  
+        dispatch({
+          type: SET_MESSAGE,
+          payload: message,
+        });
+  
+        return Promise.reject();
+      }
+    );
+  };
   
   export const logout = () => (dispatch:any) => {
     AuthService.logout();
