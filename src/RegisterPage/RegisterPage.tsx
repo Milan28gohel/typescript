@@ -3,8 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { register } from "../actions/auth";
 import { Link } from "react-router-dom";
 import { Button, Form, Grid, Header, Segment, Message } from "semantic-ui-react";
+import { reg } from "../interface/interface";
 
-const Register = () => {
+const Register:React.FC<reg> = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [successful, setSuccessful] = useState(false);

@@ -1,14 +1,14 @@
 import axios from "axios";
 import authHeader from "./auth-header";
 
-const API_URL = "https://rails-to-do-list-narola.herokuapp.com/v1/signup";
+const API_URL = "https://rails-to-do-list-narola.herokuapp.com/v1/todos?limit=10&offset=0&sort_by=id&sort_direction=desc";
 
 const getPublicContent = () => {
   return axios.get(API_URL + "all");
 };
 
-const getUserBoard = () => {
-  return axios.get(API_URL + "user", { headers: authHeader() });
+const getAddData= () => {
+  return axios.get(API_URL, { headers: authHeader() });
 };
 
 const getModeratorBoard = () => {
@@ -21,7 +21,7 @@ const getAdminBoard = () => {
 
 export default {
   getPublicContent,
-  getUserBoard,
+  getAddData,
   getModeratorBoard,
   getAdminBoard,
 };
