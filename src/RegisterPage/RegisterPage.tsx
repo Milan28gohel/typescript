@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { Button, Form, Grid, Header, Segment, Message } from "semantic-ui-react";
 import { reg } from "../interface/interface";
 
-const Register:React.FC<reg> = () => {
+const Register: React.FC<reg> = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [successful, setSuccessful] = useState(false);

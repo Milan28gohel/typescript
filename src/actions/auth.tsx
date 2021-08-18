@@ -54,7 +54,7 @@ import {
           type: LOGIN_SUCCESS,
           payload: { user: data },
         });
-        history.push('/home');
+        history.push('/dash');
         return Promise.resolve();
       },
       (error) => {
@@ -103,7 +103,7 @@ import {
           type: SET_MESSAGE,
           payload: message,
         });
-  
+     
         return Promise.reject();
       }
     );
