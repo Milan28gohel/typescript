@@ -7,12 +7,12 @@ const getPublicContent = () => {
   return axios.get(API_URL + "all");
 };
 
-const getAddData= () => {
+const getAddData = () => {
   return axios.get(API_URL, { headers: authHeader() });
 };
 
-const getModeratorBoard = () => {
-  return axios.get(API_URL + "mod", { headers: authHeader() });
+const DeleteData = (id: any) => {
+  return axios.delete(`https://rails-to-do-list-narola.herokuapp.com/v1/todos/${id}`, { headers: authHeader() });
 };
 
 const getAdminBoard = () => {
@@ -22,6 +22,6 @@ const getAdminBoard = () => {
 export default {
   getPublicContent,
   getAddData,
-  getModeratorBoard,
+  DeleteData,
   getAdminBoard,
 };

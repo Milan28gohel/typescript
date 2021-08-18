@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { Button, Form, Grid, Header, Segment } from "semantic-ui-react";
+import { Button, Form, Grid, Header, Segment,Icon } from "semantic-ui-react";
 import { hom } from "../interface/interface";
 import { useHistory } from "react-router-dom";
 import UserService from "../services/user.service";
@@ -13,7 +13,7 @@ const Home: React.FC<hom> = () => {
     const [successful, setSuccessful] = useState(false);
     const { message } = useSelector((state: any) => state.message);
 
-    const onChangeData = (e: any) => {
+    const onChangeData = (e:any) => {
         const data = e.target.value;
         setData(data);
     };
@@ -25,12 +25,7 @@ const Home: React.FC<hom> = () => {
         const priority = e.target.value;
         setPriority(priority);
     };
-
     const history = useHistory();
-    const logout = () => {
-        localStorage.removeItem('auth_token');
-        history.push('/login');
-    }
     const handleAdd = (e: any) => {
         e.preventDefault();
         const store = { data: data, due_date: due_date, priority: priority }
@@ -48,37 +43,46 @@ const Home: React.FC<hom> = () => {
                 console.log('Success:', data);
                 console.log('token:', data.auth_token);
 
-
+                history.push('/dash');
 
             })
             .catch((error) => {
                 console.error('Error:', error);
             });
-
+   
+          
     };
     const [posts, setPosts] = useState([]);
+    const show = () => {
+        UserService.getAddData().then(
+            (response) => {
+                const { data = [] } = response;
+                setPosts(data.data.todos);
+                console.log("show data:::::::::::::", response.data.data)
+            },
+            (error) => {
+                const _data1 =
+                    (error.response &&
+                        error.response.data &&
+                        error.response.data.message) ||
+                    error.message ||
+                    error.toString();
+                setPosts(_data1);
+            }
 
-    UserService.getAddData().then(
-        (response) => {
-            const { data = [] } = response;
-            setPosts(data.data.todos);
-            console.log("show data:::::::::::::", response.data.data)
-        },
-        (error) => {
-            const _data1 =
-                (error.response &&
-                    error.response.data &&
-                    error.response.data.message) ||
-                error.message ||
-                error.toString();
-            setPosts(_data1);
-        }
-    );
-
+        );
+    }
+    const nextpath = (path: any) => {
+        history.push(path);
+      };
     return (
-
+        <div>
+           
         <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
             <Grid.Column style={{ maxWidth: 450 }}>
+            <h2>Data List</h2>  
+            <Icon style={{fontSize:'30px',textAlign:'left'}}name="pointing left"  onClick={() => nextpath("/dash")}/>
+           
                 <Form size='large' onSubmit={handleAdd} >
                     <Segment stacked>
                         <Header as='h2' color='teal' textAlign='center'>
@@ -108,43 +112,12 @@ const Home: React.FC<hom> = () => {
                             value={priority}
                             onChange={onChangePriority}
                         />
-                        <Button color='teal' fluid size='large'>Create to do</Button><br/>
-                      
-                        <Button color='teal' fluid size='large' onClick={logout}>logout</Button>
-                       
+                        <Button color='teal' fluid size='large' onClick={show}>Create to do</Button><br />
                     </Segment>
                 </Form>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Data</th>
-                            <th>Date</th>
-                            <th>Priority</th>
-                            <th>Delete</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            posts.length !== 0 ?
-                                posts.map((post: any, index) => {
-                                    return (
-                                        <tr key={index}>
-                                            <td>{post.id}</td>
-                                            <td>{post.data}</td>
-                                            <td>{post.due_date}</td>
-                                            <td>{post.priority}</td>
-                                            <button> {post.Delete}Delete</button>
-                                        </tr>
-                                    )
-                                })
-                                : 'No data found'
-                        }
-                    </tbody>
-                </table>
             </Grid.Column>
         </Grid>
-       
+        </div>
     );
 };
 export default Home;
