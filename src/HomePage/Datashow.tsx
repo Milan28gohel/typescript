@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import UserService from "../services/user.service";
-import { Table, Icon, Button,Checkbox } from "semantic-ui-react";
+import { Table, Icon, Button,Checkbox,Modal } from "semantic-ui-react";
 import { useHistory } from "react-router-dom";
 import _ from "lodash";
 
@@ -14,36 +14,34 @@ const tableData = [
   },
 ];
 
-function exampleReducer(state: any, action: any) {
+function exampleReducer(state:any, action:any) {
   switch (action.type) {
-    case "CHANGE_SORT":
-      if (state.column === action.column) {
-        return {
-          ...state,
-          data: state.data.slice().reverse(),
-          direction:
-            state.direction === "ascending" ? "descending" : "ascending",
-        };
-      }
-
-      return {
-        column: action.column,
-        data: _.sortBy(state.data, [action.column]),
-        direction: "ascending",
-      };
+    case 'close':
+      return { open: false }
+    case 'open':
+      return { open: true, size: action.size }
     default:
-      throw new Error();
+      throw new Error('Unsupported action...')
   }
 }
 
-function Dashboard() {
-  const [state, dispatch] = React.useReducer(exampleReducer, {
-    column: null,
-    data: tableData,
-    direction: null,
-  });
-  const { column, data, direction } = state;
 
+function Dashboard() {
+
+
+  const [state, dispatch] = React.useReducer(exampleReducer, {
+    open: false,
+    size: undefined,
+    
+
+
+   
+  })
+  const { open, size } = state
+
+
+
+  const [id,setId] = useState(null);
   const [posts, setPosts] = useState([]);
   useEffect(() => {
     UserService.getAddData().then(
@@ -74,47 +72,49 @@ function Dashboard() {
     });
   };  
   const onDelete = (id: any) => {
+    setId(id)
     UserService.DeleteData(id).then(() => {
       getData();
     });
   };
+// const [open,setOpen] = React.useState(false);
+
+//  const handleClickOpen =(id:any)=>{
+//     setId(id);
+
+//     setOpen(true); 
+//  }
+// const handleClose =()=>{
+//   setOpen(false);
+// }
+  // const sortdata = (id:any) => {
+  //   UserService.sorting().then(() => {
+  //     getData();
+  //   });
+  // };
   const nextpath = (path: any) => {
     history.push(path);
   };
 
   return (
     <div>
-    <h1 >Add Data</h1>
+    <h1 >Data List</h1>
 
       <Icon style={{fontSize:'30px',textAlign:'left'}}name="user plus"  onClick={() => nextpath("/home")}/>
 
       <Table sortable celled fixed>
         <Table.Header>
           <Table.Row>
-            <Table.HeaderCell
-              sorted={column === "id" ? direction : null}
-              onClick={() => dispatch({ type: "CHANGE_SORT", column: "id" })}
-            >
+            <Table.HeaderCell >
               ID
             </Table.HeaderCell>
-            <Table.HeaderCell
-              sorted={column === "name" ? direction : null}
-              onClick={() => dispatch({ type: "CHANGE_SORT", column: "name" })}
-            >
+            <Table.HeaderCell>
               Data
             </Table.HeaderCell>
-            <Table.HeaderCell
-              sorted={column === "date" ? direction : null}
-              onClick={() => dispatch({ type: "CHANGE_SORT", column: "date" })}
-            >
+            <Table.HeaderCell >
               Date
             </Table.HeaderCell>
-            <Table.HeaderCell
-              sorted={column === "number" ? direction : null}
-              onClick={() =>
-                dispatch({ type: "CHANGE_SORT", column: "number" })
-              }
-            >
+            <Table.HeaderCell>
               Priority
             </Table.HeaderCell>
             <Table.HeaderCell>complate</Table.HeaderCell>
@@ -125,14 +125,32 @@ function Dashboard() {
           {posts.length !== 0
             ? posts.map((post: any, index) => {
                 return (
-               
                   <Table.Row key={index}>
                     <Table.HeaderCell>{post.id}</Table.HeaderCell>
                     <Table.HeaderCell>{post.data}</Table.HeaderCell>
                     <Table.HeaderCell>{post.due_date}</Table.HeaderCell>
                     <Table.HeaderCell>{post.priority}</Table.HeaderCell>
                     <Table.HeaderCell collapsing> <Checkbox slider /></Table.HeaderCell>
-                    <Button onClick={() => onDelete(post.id)}>Delete</Button>
+                    <Button onClick={() =>  dispatch({ type: 'open'}) }>Delete</Button>
+
+                    <Modal
+        size={'mini'}
+        open={open}
+        // onClose={() => dispatch({ type: 'close' })}
+      >
+        <Modal.Header> Delete Your Data</Modal.Header>
+        <Modal.Content>
+          <p>Are you sure you want to delete your account</p>
+        </Modal.Content>
+        <Modal.Actions>
+          <Button negative onClick={() => dispatch({ type: 'close' })}>
+            No
+          </Button>
+          <Button positive onClick={() => onDelete(id)}>
+            Yes
+          </Button>
+        </Modal.Actions>
+      </Modal>
                   </Table.Row>
                
                 );
