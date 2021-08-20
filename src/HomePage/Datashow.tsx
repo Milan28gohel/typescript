@@ -1,54 +1,68 @@
 import React, { useEffect, useState } from "react";
 import UserService from "../services/user.service";
-import { Table, Icon, Button,Checkbox,Modal } from "semantic-ui-react";
+import {
+  Table,
+  Icon,
+  Button,
+  Checkbox,
+  Modal,
+  Header,
+} from "semantic-ui-react";
 import { useHistory } from "react-router-dom";
 import _ from "lodash";
 
-const tableData = [
+const TableData = [
+
   {
-    Id: "post.id",
-    Data: "post.data",
-    Date: "post.due_date",
-    Priority: "post.priority",
-    Delete: "",
+    id: "post.id",
+    data: "post.data",
+    due_date: "post.due_date",
+    priority: "post.priority",
+    complate: "complate",
+    Delete: "Delete",
   },
+
 ];
 
-function exampleReducer(state:any, action:any) {
+function exampleReducer(state: any, action: any) {
   switch (action.type) {
-    case 'close':
-      return { open: false }
-    case 'open':
-      return { open: true, size: action.size }
+    case "CHANGE_SORT":
+      if (state.column === action.column) {
+        return {
+          ...state,
+          data: state.data.slice().reverse(),
+          direction:
+            state.direction === "ascending" ? "descending" : "ascending",
+        };
+      }
+
+      return {
+        column: action.column,
+        data: _.sortBy(state.data, [action.column]),
+        direction: "ascending",
+      };
     default:
-      throw new Error('Unsupported action...')
+      throw new Error();
   }
 }
 
-
 function Dashboard() {
 
-
+  
   const [state, dispatch] = React.useReducer(exampleReducer, {
-    open: false,
-    size: undefined,
-    
+    column: null,
+    data: TableData,
+    direction: null,
+  });
 
+  const { column, direction } = state;
 
-   
-  })
-  const { open, size } = state
-
-
-
-  const [id,setId] = useState(null);
-  const [posts, setPosts] = useState([]);
+   const [posts, setPosts] = useState([]);
   useEffect(() => {
     UserService.getAddData().then(
       (response) => {
         const { data = [] } = response;
-        setPosts(data.data.todos);
-        console.log("show data:::::::::::::", response.data.data);
+         setPosts(data.data.todos);
       },
       (error) => {
         const _data1 =
@@ -57,102 +71,162 @@ function Dashboard() {
             error.response.data.message) ||
           error.message ||
           error.toString();
-        setPosts(_data1);
+         setPosts(_data1);
       }
     );
   }, []);
+
   const history = useHistory();
+
   const logout = () => {
     localStorage.removeItem("auth_token");
     history.push("/login");
   };
+
   const getData = () => {
     UserService.getAddData().then((getData) => {
-      setPosts(getData.data.data.todos);
+       setPosts(getData.data.data.todos);
     });
-  };  
+  };
+
   const onDelete = (id: any) => {
-    setId(id)
     UserService.DeleteData(id).then(() => {
       getData();
     });
+    setOpen(false);
   };
-// const [open,setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
+  const [id, setId] = useState(null);
 
-//  const handleClickOpen =(id:any)=>{
-//     setId(id);
+  const handleClickOpen = (id: any) => {  
+    setId(id);
+    setOpen(true);
+  };
+  
+  const handleClose = () => {
+    setOpen(false);
+  };
 
-//     setOpen(true); 
-//  }
-// const handleClose =()=>{
-//   setOpen(false);
-// }
-  // const sortdata = (id:any) => {
-  //   UserService.sorting().then(() => {
-  //     getData();
-  //   });
-  // };
   const nextpath = (path: any) => {
     history.push(path);
   };
 
+//   const handleTableChange = ( sorter: any) => {
+
+//     UserService.SortData(sorter.field, sorter.order === "ascend" ? 'asc' : 'desc')
+//     .then((getData) => {
+//         setPosts(getData.data.data.todos);
+//     })
+// }
+
+
   return (
     <div>
-    <h1 >Data List</h1>
+      <h1>Data List</h1>
 
-      <Icon style={{fontSize:'30px',textAlign:'left'}}name="user plus"  onClick={() => nextpath("/home")}/>
+      <Icon
+        style={{ fontSize: "30px", textAlign: "left" }}
+        name="user plus"
+        onClick={() => nextpath("/home")}
+      />
 
       <Table sortable celled fixed>
         <Table.Header>
           <Table.Row>
-            <Table.HeaderCell >
+            <Table.HeaderCell
+              sorted={column === "id" ? direction : null}
+              onClick={() => dispatch({ type: "CHANGE_SORT", column: "id" })}
+              // onClick={handleTableChange}
+            >
               ID
             </Table.HeaderCell>
-            <Table.HeaderCell>
+
+            <Table.HeaderCell
+              sorted={column === "data" ? direction : null}
+              onClick={() => dispatch({ type: "CHANGE_SORT", column: "data" })}
+            >
               Data
             </Table.HeaderCell>
-            <Table.HeaderCell >
+
+            <Table.HeaderCell
+              sorted={column === "due_date" ? direction : null}
+              onClick={() =>
+                dispatch({ type: "CHANGE_SORT", column: "due_date" })
+              }
+            >
               Date
             </Table.HeaderCell>
-            <Table.HeaderCell>
+
+            <Table.HeaderCell
+              sorted={column === "priority" ? direction : null}
+              onClick={() =>
+                dispatch({ type: "CHANGE_SORT", column: "priority" })
+              }
+            >
               Priority
             </Table.HeaderCell>
-            <Table.HeaderCell>complate</Table.HeaderCell>
-            <Table.HeaderCell>Delete</Table.HeaderCell>
+
+            <Table.HeaderCell
+              sorted={column === "complate" ? direction : null}
+              onClick={() =>
+                dispatch({ type: "CHANGE_SORT", column: "complate" })
+              }
+            >
+              complate
+            </Table.HeaderCell>
+
+            <Table.HeaderCell
+              sorted={column === "Delete" ? direction : null}
+              onClick={() =>
+                dispatch({ type: "CHANGE_SORT", column: "Delete" })
+              }
+            >
+              Delete
+            </Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>
           {posts.length !== 0
-            ? posts.map((post: any, index) => {
+            ? posts.map((post: any, index:any) => {
                 return (
                   <Table.Row key={index}>
-                    <Table.HeaderCell>{post.id}</Table.HeaderCell>
-                    <Table.HeaderCell>{post.data}</Table.HeaderCell>
-                    <Table.HeaderCell>{post.due_date}</Table.HeaderCell>
-                    <Table.HeaderCell>{post.priority}</Table.HeaderCell>
-                    <Table.HeaderCell collapsing> <Checkbox slider /></Table.HeaderCell>
-                    <Button onClick={() =>  dispatch({ type: 'open'}) }>Delete</Button>
+                    <Table.Cell>{post.id}</Table.Cell>
+                    <Table.Cell>{post.data}</Table.Cell>
+                    <Table.Cell>{post.due_date}</Table.Cell>
+                    <Table.Cell>{post.priority}</Table.Cell>
+                    <Table.Cell collapsing>
+                      {" "}
+                      <Checkbox slider />{" "}
+                    </Table.Cell>
+                    <Table.Cell>
+                    <Button onClick={() => handleClickOpen(post.id)}>
+                      Delete
+                    </Button>
+                    </Table.Cell  >
 
-                    <Modal
-        size={'mini'}
-        open={open}
-        // onClose={() => dispatch({ type: 'close' })}
-      >
-        <Modal.Header> Delete Your Data</Modal.Header>
-        <Modal.Content>
-          <p>Are you sure you want to delete your account</p>
-        </Modal.Content>
-        <Modal.Actions>
-          <Button negative onClick={() => dispatch({ type: 'close' })}>
-            No
-          </Button>
-          <Button positive onClick={() => onDelete(id)}>
-            Yes
-          </Button>
-        </Modal.Actions>
-      </Modal>
+                    <Modal open={open}>
+                      <Modal.Header>Confirrmation</Modal.Header>
+                      <Modal.Content>
+                        <Modal.Description>
+                          <Header>sure you delete this data</Header>
+                          <p>finally delete this data</p>
+                        </Modal.Description>
+                      </Modal.Content>
+                      <Modal.Actions>
+                        <Button color="black" onClick={handleClose}>
+                          cancel
+                        </Button>
+                        <Button
+                          labelPosition="right"
+                          icon="checkmark"
+                          onClick={() => onDelete(id)}
+                        >
+                          {" "}
+                          Delete
+                        </Button>
+                      </Modal.Actions>
+                    </Modal>
                   </Table.Row>
-               
                 );
               })
             : "No data found"}
