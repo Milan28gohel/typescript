@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../actions/auth";
 import { Button, Form, Grid, Header, Segment, Message } from "semantic-ui-react";
-import {log} from "../interface/interface"
 
-const Login:React.FC<log> = () => {
+
+const Login = () => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

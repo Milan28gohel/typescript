@@ -9,38 +9,15 @@ import {
   Icon,
   Modal,
 } from "semantic-ui-react";
-import { hom } from "../interface/interface";
+
 import { useHistory } from "react-router-dom";
 
-function exampleReducer(state:any, action:any) {
-  switch (action.type) {
-    case 'close':
-      return { open: false }
-    case 'open':
-      return { open: true, size: action.size }
-    default:
-      throw new Error('Unsupported action...')
-  }
-}
-
-
-
-
-
-const Home: React.FC<hom> = () => {
+const Home = () => {
   const [data, setData] = useState("");
   const [due_date, setDue_Date] = useState("");
   const [priority, setPriority] = useState("");
   const [successful, setSuccessful] = useState(false);
   const { message } = useSelector((state: any) => state.message);
-
-
-  const [state, dispatch] = React.useReducer(exampleReducer, {
-    open: false,
-    size: undefined,
-  })
-  const { open, size } = state
-
 
   const onChangeData = (e: any) => {
     const data = e.target.value;
@@ -76,6 +53,15 @@ const Home: React.FC<hom> = () => {
       .catch((error) => {
         console.error("Error:", error);
       });
+  };
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = (id: any) => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
   };
 
   const nextpath = (path: any) => {
@@ -124,34 +110,33 @@ const Home: React.FC<hom> = () => {
                 value={priority}
                 onChange={onChangePriority}
               />
-              <Button
-                color="teal"
-                fluid
-                size="large"
-                onClick={() => dispatch({ type: 'open', size: 'mini' })}
-              >
+              <Button color="teal" fluid size="large" onClick={handleClickOpen}>
                 Create to do
               </Button>
 
+              <Modal open={open}>
+                <Modal.Header>Confirrmation</Modal.Header>
+                <Modal.Content>
+                  <Modal.Description>
+                    <Header>sure you add this data</Header>
+                    <p>finally add this data</p>
+                  </Modal.Description>
+                </Modal.Content>
+                <Modal.Actions>
+                  <Button color="black" onClick={handleClose}>
+                    cancel
+                  </Button>
+                  <Button
+                    labelPosition="right"
+                    icon="checkmark"
+                    onClick={() => nextpath("/dash")}
+                  >
+                    {" "}
+                    Add data
+                  </Button>
+                </Modal.Actions>
+              </Modal>
 
-              <Modal
-        size={size}
-        open={open}
-        onClose={() => dispatch({ type: 'close' })}
-      >
-        <Modal.Header>ADDYour Data</Modal.Header>
-        <Modal.Content>
-          <p>Are you sure you want to add your account</p>
-        </Modal.Content>
-        <Modal.Actions>
-          <Button negative onClick={() => dispatch({ type: 'close' })}>
-            No
-          </Button>
-          <Button positive onClick={() => nextpath("/dash")}>
-            Yes
-          </Button>
-        </Modal.Actions>
-      </Modal>
               <br />
             </Segment>
           </Form>
