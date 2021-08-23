@@ -7,6 +7,7 @@ import { history } from './helpers/history';
 import HomePage from './HomePage/HomePage';
 import Dashboard from './HomePage/Datashow';
 
+
 function App() {
   return (
     <div className="App">
@@ -16,7 +17,6 @@ function App() {
           <Route path="/login" component={Login} />
           <Route path="/home" component={HomePage} />
           <Route path="/dash" component={Dashboard} />
-
           <Redirect from="*" to="/" />
         </Switch>
       </Router>

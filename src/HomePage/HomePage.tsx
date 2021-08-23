@@ -9,10 +9,12 @@ import {
   Icon,
   Modal,
 } from "semantic-ui-react";
-
 import { useHistory } from "react-router-dom";
+import SemanticModal from "./SemanticModal";
 
-const Home = () => {
+
+
+const Home = (props: any) => {
   const [data, setData] = useState("");
   const [due_date, setDue_Date] = useState("");
   const [priority, setPriority] = useState("");
@@ -110,15 +112,20 @@ const Home = () => {
                 value={priority}
                 onChange={onChangePriority}
               />
-              <Button color="teal" fluid size="large" onClick={handleClickOpen}>
+              <Button
+                color="teal"
+                fluid
+                size="large"
+                onClick={handleClickOpen}
+              >
                 Create to do
               </Button>
 
               <Modal open={open}>
-                <Modal.Header>Confirrmation</Modal.Header>
+                <Modal.Header   header="add data"/>
                 <Modal.Content>
                   <Modal.Description>
-                    <Header>sure you add this data</Header>
+                    <Header content="sure you add this data"/>
                     <p>finally add this data</p>
                   </Modal.Description>
                 </Modal.Content>

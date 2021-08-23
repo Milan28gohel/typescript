@@ -12,16 +12,14 @@ import { useHistory } from "react-router-dom";
 import _ from "lodash";
 
 const TableData = [
-
   {
-    id: "post.id",
-    data: "post.data",
-    due_date: "post.due_date",
-    priority: "post.priority",
+    id: "id",
+    data: "data",
+    due_date: "due_date",
+    priority: "priority",
     complate: "complate",
     Delete: "Delete",
   },
-
 ];
 
 function exampleReducer(state: any, action: any) {
@@ -47,8 +45,6 @@ function exampleReducer(state: any, action: any) {
 }
 
 function Dashboard() {
-
-  
   const [state, dispatch] = React.useReducer(exampleReducer, {
     column: null,
     data: TableData,
@@ -57,12 +53,12 @@ function Dashboard() {
 
   const { column, direction } = state;
 
-   const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState([]);
   useEffect(() => {
     UserService.getAddData().then(
       (response) => {
         const { data = [] } = response;
-         setPosts(data.data.todos);
+        setPosts(data.data.todos);
       },
       (error) => {
         const _data1 =
@@ -71,7 +67,7 @@ function Dashboard() {
             error.response.data.message) ||
           error.message ||
           error.toString();
-         setPosts(_data1);
+        setPosts(_data1);
       }
     );
   }, []);
@@ -85,7 +81,7 @@ function Dashboard() {
 
   const getData = () => {
     UserService.getAddData().then((getData) => {
-       setPosts(getData.data.data.todos);
+      setPosts(getData.data.data.todos);
     });
   };
 
@@ -98,11 +94,11 @@ function Dashboard() {
   const [open, setOpen] = React.useState(false);
   const [id, setId] = useState(null);
 
-  const handleClickOpen = (id: any) => {  
+  const handleClickOpen = (id: any) => {
     setId(id);
     setOpen(true);
   };
-  
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -111,14 +107,16 @@ function Dashboard() {
     history.push(path);
   };
 
-//   const handleTableChange = ( sorter: any) => {
-
-//     UserService.SortData(sorter.field, sorter.order === "ascend" ? 'asc' : 'desc')
-//     .then((getData) => {
-//         setPosts(getData.data.data.todos);
-//     })
-// }
-
+  const handleTableChange = () => {
+    console.log(state);
+    console.log("column", column);
+    UserService.SortData(
+      state.column,
+      state.direction === "ascending" ? "asc" : "desc"
+    ).then((getData) => {
+      setPosts(getData.data.data.todos);
+    });
+  };
 
   return (
     <div>
@@ -135,33 +133,40 @@ function Dashboard() {
           <Table.Row>
             <Table.HeaderCell
               sorted={column === "id" ? direction : null}
-              onClick={() => dispatch({ type: "CHANGE_SORT", column: "id" })}
-              // onClick={handleTableChange}
+              onClick={() => {
+                dispatch({ type: "CHANGE_SORT", column: "id" });
+                handleTableChange();
+              }}
             >
               ID
             </Table.HeaderCell>
 
             <Table.HeaderCell
               sorted={column === "data" ? direction : null}
-              onClick={() => dispatch({ type: "CHANGE_SORT", column: "data" })}
+              onClick={() => {
+                dispatch({ type: "CHANGE_SORT", column: "data" });
+                handleTableChange();
+              }}
             >
               Data
             </Table.HeaderCell>
 
             <Table.HeaderCell
               sorted={column === "due_date" ? direction : null}
-              onClick={() =>
-                dispatch({ type: "CHANGE_SORT", column: "due_date" })
-              }
+              onClick={() => {
+                dispatch({ type: "CHANGE_SORT", column: "due_date" });
+                handleTableChange();
+              }}
             >
               Date
             </Table.HeaderCell>
 
             <Table.HeaderCell
               sorted={column === "priority" ? direction : null}
-              onClick={() =>
-                dispatch({ type: "CHANGE_SORT", column: "priority" })
-              }
+              onClick={() => {
+                dispatch({ type: "CHANGE_SORT", column: "priority" });
+                handleTableChange();
+              }}
             >
               Priority
             </Table.HeaderCell>
@@ -187,7 +192,7 @@ function Dashboard() {
         </Table.Header>
         <Table.Body>
           {posts.length !== 0
-            ? posts.map((post: any, index:any) => {
+            ? posts.map((post: any, index: any) => {
                 return (
                   <Table.Row key={index}>
                     <Table.Cell>{post.id}</Table.Cell>
@@ -199,10 +204,10 @@ function Dashboard() {
                       <Checkbox slider />{" "}
                     </Table.Cell>
                     <Table.Cell>
-                    <Button onClick={() => handleClickOpen(post.id)}>
-                      Delete
-                    </Button>
-                    </Table.Cell  >
+                      <Button onClick={() => handleClickOpen(post.id)}>
+                        Delete
+                      </Button>
+                    </Table.Cell>
 
                     <Modal open={open}>
                       <Modal.Header>Confirrmation</Modal.Header>
